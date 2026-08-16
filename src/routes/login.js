@@ -18,7 +18,8 @@ loginRouter.post('/login', async (req, res) => {
   try {
     await client.connect();
     await client.logout().catch(() => client.close());
-  } catch {
+  } catch (err) {
+    console.error('Login failed for', email, '-', err.message);
     return res.status(401).json({ error: 'Invalid email or password' });
   }
 
