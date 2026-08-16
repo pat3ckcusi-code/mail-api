@@ -48,10 +48,11 @@ pooling before this serves meaningfully concurrent traffic.
 
 ## Deployment
 
-See `deploy/DEPLOY.md` for the full walkthrough. Short version: this server's actual public-facing
-proxy is a standalone Traefik container (not mailcow's own nginx, which is loopback-only) using a
-file-based dynamic config - deployment means publishing mail-api's port to `127.0.0.1` (already
-wired in `deploy/docker-compose.override.yml`) and adding a matching router entry to Traefik's
+See `deploy/DEPLOY.md` for the full walkthrough. Short version: this deploys as its own Komodo
+Stack built straight from this repo's root `docker-compose.yml` (joins mailcow's Docker network as
+external to reach Dovecot/Postfix internally). This server's actual public-facing proxy is a
+standalone Traefik container (not mailcow's own nginx, which is loopback-only) using a file-based
+dynamic config - going live also means adding a matching router entry to Traefik's
 `/etc/traefik/dynamic.yml`, not an nginx vhost. `mail_app_flutter`'s `dart_define.prod.json` is
 already set to the intended final address (`https://api.lgucalapan.ph`, no `/api` suffix - this
 server's routes are mounted at the root).

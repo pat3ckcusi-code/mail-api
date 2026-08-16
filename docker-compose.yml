@@ -1,0 +1,39 @@
+# Deployed as its own Komodo Stack, built directly from this repo - not
+# merged into mailcow's own compose project, so it joins mailcow's Docker
+# network as an external network to reach Dovecot/Postfix by container name.
+# JWT_SECRET/CRED_ENC_KEY come from Komodo's Stack "Environment" field, not
+# committed here - generate with:
+#   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+services:
+  mail-api:
+    build:
+      context: .
+    container_name: mail-api
+    restart: always
+    environment:
+      - PORT=3000
+      - IMAP_HOST=dovecot
+      - IMAP_PORT=993
+      - IMAP_SECURE=true
+      - IMAP_TLS_SERVERNAME=mail.lgucalapan.ph
+      - SMTP_HOST=postfix
+      - SMTP_PORT=587
+      - SMTP_SECURE=false
+      - SMTP_TLS_SERVERNAME=mail.lgucalapan.ph
+      - JWT_SECRET=${JWT_SECRET}
+      - CRED_ENC_KEY=${CRED_ENC_KEY}
+      - JWT_EXPIRES_IN=30d
+    # Traefik (the actual public-facing proxy on this host) runs with
+    # network_mode: host and reaches backends via 127.0.0.1:<port> - see
+    # deploy/DEPLOY.md.
+    ports:
+      - "127.0.0.1:3100:3000"
+    networks:
+      mailcow-network:
+        aliases:
+          - mail-api
+
+networks:
+  mailcow-network:
+    external: true
+    name: mail-lgucalapan-ph_mailcow-network
