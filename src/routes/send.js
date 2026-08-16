@@ -71,7 +71,9 @@ sendRouter.post('/send', upload.array('attachments'), async (req, res) => {
       host: config.smtp.host,
       port: config.smtp.port,
       secure: config.smtp.secure,
-      tls: config.smtp.tlsServername ? { servername: config.smtp.tlsServername } : undefined,
+      // Postfix's STARTTLS here uses the same self-signed cert as Dovecot's -
+      // see the comment in imapClient.js's imapConnectOptions for why this is safe.
+      tls: { rejectUnauthorized: false, servername: config.smtp.tlsServername },
       auth: { user: email, pass: password },
     });
     await transporter.sendMail(mailOptions);

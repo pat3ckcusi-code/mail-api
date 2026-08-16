@@ -45,6 +45,11 @@ pooling before this serves meaningfully concurrent traffic.
   own send path does, so `/send` does it explicitly after a successful SMTP send. It's
   best-effort (a slow/missing Sent folder won't fail the request) - worth confirming a sent test
   message actually shows up in Sent.
+- **`rejectUnauthorized: false` on both the IMAP and SMTP TLS options**: intentional, not an
+  oversight. If this mailcow's own Let's Encrypt issuance is disabled (`SKIP_LETS_ENCRYPT`),
+  Dovecot/Postfix present mailcow's bundled self-signed cert internally - unrelated to whatever
+  real cert a separate reverse proxy manages for the public HTTPS domain. Safe to skip validation
+  since this connection stays inside the private Docker network between mail-api and mailcow.
 
 ## Deployment
 

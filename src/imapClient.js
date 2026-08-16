@@ -6,7 +6,12 @@ export function imapConnectOptions({ email, password }) {
     host: config.imap.host,
     port: config.imap.port,
     secure: config.imap.secure,
-    tls: config.imap.tlsServername ? { servername: config.imap.tlsServername } : undefined,
+    // This mailcow install has its own Let's Encrypt issuance disabled -
+    // Dovecot presents its bundled self-signed cert internally (unrelated to
+    // the real cert the separate Traefik instance manages for the public
+    // HTTPS domains). Safe to skip validation here since this connection
+    // never leaves the private mailcow-network.
+    tls: { rejectUnauthorized: false, servername: config.imap.tlsServername },
     auth: { user: email, pass: password },
     logger: false,
   };
