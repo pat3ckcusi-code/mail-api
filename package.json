@@ -1,0 +1,21 @@
+{
+  "name": "mail-api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "REST middleware wrapping IMAP/SMTP for the mail_app_flutter client, backed by a mailcow mail server.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^5.1.0",
+    "imapflow": "^1.0.184",
+    "jsonwebtoken": "^9.0.2",
+    "mailparser": "^3.7.1",
+    "multer": "^2.0.0",
+    "nodemailer": "^9.0.5"
+  }
+}
